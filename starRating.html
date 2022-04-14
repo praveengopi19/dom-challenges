@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
+    />
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      .fa-star-o:before {
+        content: "\f006";
+        color: #5f6368;
+      }
+
+      .fa-star:before {
+        content: "\f005";
+        color: #d56e0c;
+      }
+
+      .fa {
+    font-size: 40px;
+}
+    </style>
+  </head>
+
+  <!-- <i class="fa fa-star"></i>
+<i class="fa fa-star-o"></i> -->
+
+  <body>
+    <div id="star">
+      <!-- Good -->
+    </div>
+    <div id="display-star"></div>
+    <script>
+      function Star(el, count, callback) {
+        // write logic to create star rating utility.
+        const parentElement = document.querySelector(el);
+        const fragment = document.createDocumentFragment();
+
+        const memoizedChilds = [];
+        let lastUpdatedRating = -1;
+
+        for (let i = 0; i < count; i++) {
+          const iElement = document.createElement("i");
+          iElement.classList.add("fa", "fa-star-o");
+          iElement.dataset.rating = i+1;
+          memoizedChilds.push(iElement);
+          fragment.appendChild(iElement);
+        }
+
+        parentElement.appendChild(fragment)
+
+        const fillRating = (targetRating) =>{
+            memoizedChilds.forEach((node)=>{
+                const nodeRating =  node.dataset.rating - 0;
+                if(nodeRating && nodeRating<=targetRating ){
+                    node.classList.add("fa-star")
+                }else{
+                    node.classList.remove("fa-star")
+                }
+            })
+        }
+
+        const handleMouseOver = (event) =>{
+            const rating = event.target.dataset.rating - 0
+            
+            if(rating){
+                fillRating(rating)
+            }
+        }
+
+        const handleMouseLeave = (event) => {
+            fillRating(lastUpdatedRating)
+        }
+
+        const handleClick = (event) => {
+            const rating = event.target.dataset.rating - 0
+
+            if(rating){
+                fillRating(rating)
+                lastUpdatedRating = rating
+                callback(rating)
+            }
+
+
+        }
+
+        parentElement.addEventListener("mouseover", handleMouseOver)
+        parentElement.addEventListener("mouseleave", handleMouseLeave)
+        parentElement.addEventListener("click", handleClick)
+
+      }
+
+      function getStar(value) {
+        document.getElementById("display-star").innerHTML = value;
+      }
+      new Star("#star", 5, getStar);
+    </script>
+  </body>
+</html>
