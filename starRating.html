@@ -39,7 +39,6 @@
 
   <body>
     <div id="star">
-      <!-- Good -->
     </div>
     <div id="display-star"></div>
     <script>
@@ -48,21 +47,19 @@
         const parentElement = document.querySelector(el);
         const fragment = document.createDocumentFragment();
 
-        const memoizedChilds = [];
         let lastUpdatedRating = -1;
 
         for (let i = 0; i < count; i++) {
           const iElement = document.createElement("i");
           iElement.classList.add("fa", "fa-star-o");
           iElement.dataset.rating = i+1;
-          memoizedChilds.push(iElement);
           fragment.appendChild(iElement);
         }
 
         parentElement.appendChild(fragment)
 
         const fillRating = (targetRating) =>{
-            memoizedChilds.forEach((node)=>{
+            [...parentElement.children].forEach((node)=>{
                 const nodeRating =  node.dataset.rating - 0;
                 if(nodeRating && nodeRating<=targetRating ){
                     node.classList.add("fa-star")
