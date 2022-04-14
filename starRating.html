@@ -59,14 +59,15 @@
         parentElement.appendChild(fragment)
 
         const fillRating = (targetRating) =>{
-            [...parentElement.children].forEach((node)=>{
-                const nodeRating =  node.dataset.rating - 0;
+          for(let i =0 ;i<count;i++){
+            const node = parentElement.children[i]
+            const nodeRating =  node.dataset.rating - 0;
                 if(nodeRating && nodeRating<=targetRating ){
                     node.classList.add("fa-star")
                 }else{
                     node.classList.remove("fa-star")
                 }
-            })
+          }
         }
 
         const handleMouseOver = (event) =>{
