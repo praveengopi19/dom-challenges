@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+
+        #container {
+           text-align: center;
+        }
+
+        .row_wrapper {
+            height: 31px;
+        }
+
+        .grid_cells {
+            border: 1px solid gray;
+            height: 30px;
+            width: 30px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .info{
+            padding-block-start: 30px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div id="container">
+        <h2>Pixel Art</h2>
+        <div id="grid"></div>
+        <div class="info">
+            Select color by clicking and paint the cells using click <br/>
+            Click and hold then move mouse to color the cells continuously
+          </div>
+    </div>
+
+    <script>
+        const getRandomColors = () => "#000000".replace(/0/g, function () { return (~~(Math.random() * 16)).toString(16); });
+
+        function PixelArt(el, rows, cols) {
+
+            const gridWrapper = document.querySelector(el)
+            const fragment = document.createDocumentFragment();
+
+            let selectedColor = "";
+            let isMouseDown = false;
+
+            for (let i = 0; i <= rows; i++) {
+                const rowFragment = document.createDocumentFragment();
+                for (let j = 0; j < cols; j++) {
+
+                    const grid = document.createElement("span")
+                    grid.classList.add("grid_cells")
+
+                    if (i === rows) {
+                        grid.dataset.suggestColor = true
+                        grid.style.background = getRandomColors()
+                    }
+
+                    rowFragment.appendChild(grid)
+                }
+
+                const gridRowWrapper = document.createElement("div")
+                gridRowWrapper.classList.add("row_wrapper")
+                gridRowWrapper.appendChild(rowFragment)
+                fragment.appendChild(gridRowWrapper)
+            }
+            gridWrapper.appendChild(fragment)
+
+            const handleGridClick = (event) => {
+                if (event.target.dataset?.suggestColor) {
+                    selectedColor = event.target.style.background
+                } else if (!selectedColor) {
+                    return
+                }else if(event.target.classList.contains("grid_cells")){
+                    event.target.style.background = selectedColor;
+                }
+            }
+
+            
+            const handleGridMouseOver = (event) => {
+                if(selectedColor && event.target.classList.contains("grid_cells") && !event.target.dataset.suggestColor){
+                    event.target.style.background = selectedColor;
+                }
+            }
+
+            const handleGridMouseDown = (event) => {
+                isMouseDown = true;
+
+                if (event.target.dataset?.suggestColor) {
+                    selectedColor = event.target.style.background
+                }else if(selectedColor && event.target.classList.contains("grid_cells")){
+                    event.target.style.background = selectedColor;
+                    gridWrapper.addEventListener("mouseover", handleGridMouseOver)
+                }
+            }
+
+            const handleGridMouseUp = () => {
+                isMouseDown && gridWrapper.removeEventListener("mouseover", handleGridMouseOver)
+                isMouseDown = false
+            }
+
+            const handleGridMouseLeave = () => {
+                handleGridMouseUp()
+            }
+
+            // gridWrapper.addEventListener("click", handleGridClick)
+
+            gridWrapper.addEventListener("mousedown", handleGridMouseDown)
+            gridWrapper.addEventListener("mouseup", handleGridMouseUp)
+            gridWrapper.addEventListener("mouseleave", handleGridMouseLeave)
+
+        }
+
+
+        new PixelArt("#grid", 10, 10);
+    </script>
+</body>
+
+</html>
